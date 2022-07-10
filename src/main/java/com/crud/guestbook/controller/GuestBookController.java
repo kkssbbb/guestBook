@@ -3,10 +3,12 @@ package com.crud.guestbook.controller;
 
 import com.crud.guestbook.dto.GuestBookDto;
 import com.crud.guestbook.dto.PageRequestDto;
+
+
 import com.crud.guestbook.service.GuestBookService;
-import com.crud.guestbook.service.GuestBookServiceImp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,6 +58,48 @@ model.addAttribute("result", guestBookService.getList(pageRequestDto));
         //addFlashAttribute() = 단 한번만 데이터를 전달하는 용도로 쓰인다.
         return "redirect:/guestbook/list";
 
+    }
+
+    //읽기 수정
+    @GetMapping({"/read","/modify"})
+    public void read(Long gno, @ModelAttribute("requestDTO") PageRequestDto requestDTO, Model model ){
+
+        log.info("gno: " + gno);
+
+        GuestBookDto dto = guestBookService.read(gno);
+
+        model.addAttribute("dto", dto);
+
+    }
+
+    @PostMapping("/modify")
+    public String modify(GuestBookDto guestBookDto,
+                         @ModelAttribute("requestDTO") PageRequestDto pageRequestDto,
+                         RedirectAttributes redirectAttributes){
+        
+        
+        log.info("=============post modify==========");
+        log.info("DTO : "+guestBookDto);
+
+        guestBookService.modify(guestBookDto);
+
+        redirectAttributes.addAttribute("page", pageRequestDto.getPage());
+        redirectAttributes.addAttribute("gno" , guestBookDto.getGno());
+
+        return "redirect:/guestbook/read";
+    }
+
+    //삭제
+    @PostMapping("/remove")
+    public String remove(Long gno, RedirectAttributes redirectAttributes){
+
+        log.info("gno: " +gno);
+
+        guestBookService.remove(gno);
+
+        redirectAttributes.addFlashAttribute("msg",gno);
+
+        return "redirect:/guestbook/list";
     }
 
 

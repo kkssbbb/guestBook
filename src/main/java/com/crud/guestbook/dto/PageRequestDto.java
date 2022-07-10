@@ -21,9 +21,14 @@ public class PageRequestDto {
 
     //현재 페이지 번호
     private int page;
-
     //목록 페이지 번호
     private int size;
+    // 검색 타입
+    private String type;
+    // 검색 키워드
+    private String keyword;
+
+
 
 
     public PageRequestDto() {
